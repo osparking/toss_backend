@@ -25,4 +25,14 @@ public class PaymentCon {
 
     return ResponseEntity.ok("세션에 <주문 ID, 지불 금액> 항목을 저장함.");
   }
+
+  @GetMapping("/checkAmount")
+  public ResponseEntity<Boolean> getAmountFromSession(
+      HttpSession session, @RequestBody SaveAmountReq request) {
+
+    Object foundAmount = session.getAttribute(request.getOrderId());
+    BigDecimal amount = (BigDecimal)foundAmount;
+    Boolean result = request.getAmount().equals(amount);
+    return ResponseEntity.ok(result);
+  }
 }
