@@ -35,9 +35,4 @@ public class PaymentCon {
         Boolean result = request.getAmount().equals(amount);
         return ResponseEntity.ok(result);
     }
-
-    @GetMapping("/getKey")
-    public ResponseEntity<String> getKey() {
-        return ResponseEntity.ok().body(System.getenv("WIDGET_SECRET_KEY"));
-    }
 }
