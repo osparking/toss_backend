@@ -1,7 +1,10 @@
 package com.toss_spring.backend.controller;
 
+import com.toss_spring.backend.request.ConfirmPaymentReq;
 import com.toss_spring.backend.request.SaveAmountReq;
 import com.toss_spring.backend.util.OrderIdPrefixGen;
+import com.toss_spring.backend.util.PayService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -43,6 +46,20 @@ public class PaymentCon {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping(value = {"/confirm"})
+    public ResponseEntity<JSONObject> confirmPayment(
+            HttpServletRequest request,
+            @RequestBody ConfirmPaymentReq confirmPaymentReq)
+            throws Exception {
+
+        JSONObject response = sendRequest(
+                PayService.convertToJson(confirmPaymentReq),
+                System.getenv("WIDGET_SECRET_KEY"),
+                "https://api.tosspayments.com/v1/payments/confirm");
+        int statusCode = response.containsKey("error") ? 400:200;
+        return ResponseEntity.status(statusCode).body(response);
+    }
+  
     private JSONObject sendRequest(String confirmStr, String secretKey,
                                    String urlString) throws IOException {
         HttpURLConnection connection = createConnection(secretKey, urlString);
