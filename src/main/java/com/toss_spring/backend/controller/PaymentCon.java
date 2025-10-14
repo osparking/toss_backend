@@ -8,7 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 @RestController
 @RequestMapping("/payments")
@@ -34,5 +39,18 @@ public class PaymentCon {
         BigDecimal amount = (BigDecimal) foundAmount;
         Boolean result = request.getAmount().equals(amount);
         return ResponseEntity.ok(result);
+    }
+
+    private HttpURLConnection createConnection(
+            String secretKey, String urlString) throws IOException {
+        URL url = new URL(urlString);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization", "Basic " +
+                Base64.getEncoder().encodeToString(
+                        (secretKey + ":").getBytes(StandardCharsets.UTF_8)));
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+        return connection;
     }
 }
