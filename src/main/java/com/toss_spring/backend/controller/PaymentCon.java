@@ -13,26 +13,31 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/payments")
 public class PaymentCon {
-  private static final Logger logger = LoggerFactory.getLogger(PaymentCon.class);
+    private static final Logger logger = LoggerFactory.getLogger(PaymentCon.class);
 
-  @PostMapping("/saveAmount")
-  public ResponseEntity<?> saveAmountTemporarily(
-      HttpSession session, @RequestBody SaveAmountReq request) {
+    @PostMapping("/saveAmount")
+    public ResponseEntity<?> saveAmountTemporarily(
+            HttpSession session, @RequestBody SaveAmountReq request) {
 
-    var orderId = OrderIdPrefixGen.getOrderIdPrefix(6) + request.getOrderId();
-    logger.info("orderId: " + orderId);
-    session.setAttribute(orderId, request.getAmount());
+        var orderId = OrderIdPrefixGen.getOrderIdPrefix(6) + request.getOrderId();
+        logger.info("orderId: " + orderId);
+        session.setAttribute(orderId, request.getAmount());
 
-    return ResponseEntity.ok("세션에 <주문 ID, 지불 금액> 항목을 저장함.");
-  }
+        return ResponseEntity.ok("세션에 <주문 ID, 지불 금액> 항목을 저장함.");
+    }
 
-  @GetMapping("/checkAmount")
-  public ResponseEntity<Boolean> getAmountFromSession(
-      HttpSession session, @RequestBody SaveAmountReq request) {
+    @GetMapping("/checkAmount")
+    public ResponseEntity<Boolean> getAmountFromSession(
+            HttpSession session, @RequestBody SaveAmountReq request) {
 
-    Object foundAmount = session.getAttribute(request.getOrderId());
-    BigDecimal amount = (BigDecimal)foundAmount;
-    Boolean result = request.getAmount().equals(amount);
-    return ResponseEntity.ok(result);
-  }
+        Object foundAmount = session.getAttribute(request.getOrderId());
+        BigDecimal amount = (BigDecimal) foundAmount;
+        Boolean result = request.getAmount().equals(amount);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/getKey")
+    public ResponseEntity<String> getKey() {
+        return ResponseEntity.ok().body(System.getenv("WIDGET_SECRET_KEY"));
+    }
 }
