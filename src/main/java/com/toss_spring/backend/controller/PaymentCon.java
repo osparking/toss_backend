@@ -3,12 +3,14 @@ package com.toss_spring.backend.controller;
 import com.toss_spring.backend.request.SaveAmountReq;
 import com.toss_spring.backend.util.OrderIdPrefixGen;
 import jakarta.servlet.http.HttpSession;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -39,6 +41,27 @@ public class PaymentCon {
         BigDecimal amount = (BigDecimal) foundAmount;
         Boolean result = request.getAmount().equals(amount);
         return ResponseEntity.ok(result);
+    }
+
+    private JSONObject sendRequest(String confirmStr, String secretKey,
+                                   String urlString) throws IOException {
+        HttpURLConnection connection = createConnection(secretKey, urlString);
+        try (OutputStream os = connection.getOutputStream()) {
+            os.write(confirmStr.getBytes(StandardCharsets.UTF_8));
+        }
+
+        try (InputStream responseStream = connection.getResponseCode()==200 ?
+                connection.getInputStream():
+                connection.getErrorStream();
+             Reader reader = new InputStreamReader(responseStream,
+                     StandardCharsets.UTF_8)) {
+            return (JSONObject) new JSONParser().parse(reader);
+        } catch (Exception e) {
+            logger.error("Error reading response", e);
+            JSONObject errorResponse = new JSONObject();
+            errorResponse.put("error", "Error reading response");
+            return errorResponse;
+        }
     }
 
     private HttpURLConnection createConnection(
