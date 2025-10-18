@@ -11,6 +11,7 @@ import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
@@ -46,11 +47,15 @@ public class PaymentCon {
     @PostMapping(value = {"/confirm"})
     public ResponseEntity<JSONObject> confirmPayment(
             HttpServletRequest request,
-            @RequestBody ConfirmPaymentReq confirmPaymentReq)
+            @RequestBody @NonNull ConfirmPaymentReq confirmPaymentReq)
             throws Exception {
+        String confirmRequest = PayService.convertToJson(confirmPaymentReq);
 
+        if (confirmRequest==null) {
+            throw new Exception("결제 요청 객체 널 오류 발생");
+        }
         JSONObject response = sendRequest(
-                PayService.convertToJson(confirmPaymentReq),
+                confirmRequest,
                 System.getenv("WIDGET_SECRET_KEY"),
                 "https://api.tosspayments.com/v1/payments/confirm");
         int statusCode = response.containsKey("error") ? 400:200;
