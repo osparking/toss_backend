@@ -34,11 +34,12 @@ public class PaymentCon {
 
     @GetMapping("/checkAmount")
     public ResponseEntity<Boolean> getAmountFromSession(
-            HttpSession session, @RequestBody SaveAmountReq request) {
+            HttpSession session,
+            @RequestParam String orderId,
+            @RequestParam BigDecimal amount) {
 
-        Object foundAmount = session.getAttribute(request.getOrderId());
-        BigDecimal amount = (BigDecimal) foundAmount;
-        Boolean result = request.getAmount().equals(amount);
+        Object foundAmount = session.getAttribute(orderId);
+        Boolean result = amount.equals((BigDecimal) foundAmount);
         return ResponseEntity.ok(result);
     }
 
