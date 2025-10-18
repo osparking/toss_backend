@@ -28,11 +28,7 @@ public class PaymentCon {
     @PostMapping("/saveAmount")
     public ResponseEntity<?> saveAmountTemporarily(
             HttpSession session, @RequestBody SaveAmountReq request) {
-
-        var orderId = OrderIdPrefixGen.getOrderIdPrefix(6) + request.getOrderId();
-        logger.info("orderId: " + orderId);
-        session.setAttribute(orderId, request.getAmount());
-
+        session.setAttribute(request.getOrderId(), request.getAmount());
         return ResponseEntity.ok("세션에 <주문 ID, 지불 금액> 항목을 저장함.");
     }
 
@@ -59,7 +55,7 @@ public class PaymentCon {
         int statusCode = response.containsKey("error") ? 400:200;
         return ResponseEntity.status(statusCode).body(response);
     }
-  
+
     private JSONObject sendRequest(String confirmStr, String secretKey,
                                    String urlString) throws IOException {
         HttpURLConnection connection = createConnection(secretKey, urlString);
