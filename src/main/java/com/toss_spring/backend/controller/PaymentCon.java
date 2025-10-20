@@ -1,5 +1,6 @@
 package com.toss_spring.backend.controller;
 
+import com.toss_spring.backend.dto.CheckAmountResult;
 import com.toss_spring.backend.dto.ProductInfo;
 import com.toss_spring.backend.request.ConfirmPaymentReq;
 import com.toss_spring.backend.request.SaveProductInfoReq;
@@ -35,14 +36,15 @@ public class PaymentCon {
     }
 
     @GetMapping("/checkAmount")
-    public ResponseEntity<Boolean> getAmountFromSession(
+    public ResponseEntity<CheckAmountResult> getAmountFromSession(
             HttpSession session,
             @RequestParam String orderId,
-            @RequestParam BigDecimal amount) {
-
-        Object foundAmount = session.getAttribute(orderId);
-        Boolean result = amount.equals((BigDecimal) foundAmount);
-        return ResponseEntity.ok(result);
+            @RequestParam BigDecimal amount
+    ) {
+        var productInfo = (ProductInfo) session.getAttribute(orderId);
+        return ResponseEntity.ok(new CheckAmountResult(
+                amount.equals(productInfo.getAmount()),
+                productInfo.getProductName()));
     }
 
     @PostMapping(value = {"/confirm"})
