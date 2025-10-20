@@ -1,8 +1,8 @@
 package com.toss_spring.backend.controller;
 
+import com.toss_spring.backend.dto.ProductInfo;
 import com.toss_spring.backend.request.ConfirmPaymentReq;
-import com.toss_spring.backend.request.SaveAmountReq;
-import com.toss_spring.backend.util.OrderIdPrefixGen;
+import com.toss_spring.backend.request.SaveProductInfoReq;
 import com.toss_spring.backend.util.PayService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -26,11 +26,12 @@ import java.util.Base64;
 public class PaymentCon {
     private static final Logger logger = LoggerFactory.getLogger(PaymentCon.class);
 
-    @PostMapping("/saveAmount")
+    @PostMapping("/saveProductInfo")
     public ResponseEntity<?> saveAmountTemporarily(
-            HttpSession session, @RequestBody SaveAmountReq request) {
-        session.setAttribute(request.getOrderId(), request.getAmount());
-        return ResponseEntity.ok("세션에 <주문 ID, 지불 금액> 항목을 저장함.");
+            HttpSession session, @RequestBody SaveProductInfoReq request) {
+        session.setAttribute(request.getOrderId(), new ProductInfo(
+                request.getAmount(), request.getProductName()));
+        return ResponseEntity.ok("세션에 <주문 ID, 상품 정보> 항목을 저장함.");
     }
 
     @GetMapping("/checkAmount")
