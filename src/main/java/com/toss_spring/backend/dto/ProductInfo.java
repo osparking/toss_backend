@@ -1,4 +1,4 @@
-package com.toss_spring.backend.request;
+package com.toss_spring.backend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SaveAmountReq {
-  private String orderId;
-  private BigDecimal amount;
+public class ProductInfo {
+    private BigDecimal amount;
+    private String productName;
 }
