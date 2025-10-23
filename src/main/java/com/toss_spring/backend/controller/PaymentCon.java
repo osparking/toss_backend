@@ -2,8 +2,12 @@ package com.toss_spring.backend.controller;
 
 import com.toss_spring.backend.dto.CheckAmountResult;
 import com.toss_spring.backend.dto.ProductInfo;
+import com.toss_spring.backend.entity.BsOrder;
 import com.toss_spring.backend.request.ConfirmPaymentReq;
 import com.toss_spring.backend.request.SaveProductInfoReq;
+import com.toss_spring.backend.service.OrderIdGenerator;
+import com.toss_spring.backend.service.OrderService;
+import com.toss_spring.backend.util.OrderStatus;
 import com.toss_spring.backend.util.PayService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -11,6 +15,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +25,7 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Base64;
 
 @RestController
@@ -27,6 +33,25 @@ import java.util.Base64;
 public class PaymentCon {
     private static final Logger logger = LoggerFactory.getLogger(PaymentCon.class);
 
+    @Autowired
+    private OrderIdGenerator orderIdGenerator;
+
+    @Autowired
+    private OrderService orderService;
+
+    @GetMapping("/orderInfo")
+    public ResponseEntity<BsOrder> getOrderInfo() {
+        BsOrder order = new BsOrder();
+        order.setOrderId("");
+        order.setAmount(BigDecimal.valueOf(10700));
+        order.setPayWaitTime(LocalDateTime.now());
+        order.setOrderStatus(OrderStatus.PAY_WAIT);
+        order.setProductName("백설공주 2개 등");
+
+        var orderSaved = orderService.createOrder(order);
+        return ResponseEntity.ok(orderSaved);
+    }
+    
     @PostMapping("/saveProductInfo")
     public ResponseEntity<?> saveAmountTemporarily(
             HttpSession session, @RequestBody SaveProductInfoReq request) {
