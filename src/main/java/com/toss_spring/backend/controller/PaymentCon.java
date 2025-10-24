@@ -1,12 +1,13 @@
 package com.toss_spring.backend.controller;
 
 import com.toss_spring.backend.dto.CheckAmountResult;
-import com.toss_spring.backend.dto.ProductInfo;
+import com.toss_spring.backend.dto.OrderInfo;
 import com.toss_spring.backend.entity.BsOrder;
 import com.toss_spring.backend.request.ConfirmPaymentReq;
-import com.toss_spring.backend.request.SaveProductInfoReq;
+import com.toss_spring.backend.request.SaveOrderInfoReq;
 import com.toss_spring.backend.service.OrderIdGenerator;
 import com.toss_spring.backend.service.OrderService;
+import com.toss_spring.backend.service.PaymentService;
 import com.toss_spring.backend.util.OrderStatus;
 import com.toss_spring.backend.util.PayService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,6 +39,8 @@ public class PaymentCon {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private PaymentService paymentService;
 
     @GetMapping("/orderInfo")
     public ResponseEntity<BsOrder> getOrderInfo() {
@@ -46,17 +49,17 @@ public class PaymentCon {
         order.setAmount(BigDecimal.valueOf(10700));
         order.setPayWaitTime(LocalDateTime.now());
         order.setOrderStatus(OrderStatus.PAY_WAIT);
-        order.setProductName("백설공주 2개 등");
+        order.setOrderName("백설공주 2개 등");
 
         var orderSaved = orderService.createOrder(order);
         return ResponseEntity.ok(orderSaved);
     }
-    
-    @PostMapping("/saveProductInfo")
+
+    @PostMapping("/saveOrderInfo")
     public ResponseEntity<?> saveAmountTemporarily(
-            HttpSession session, @RequestBody SaveProductInfoReq request) {
-        session.setAttribute(request.getOrderId(), new ProductInfo(
-                request.getAmount(), request.getProductName()));
+            HttpSession session, @RequestBody SaveOrderInfoReq request) {
+        session.setAttribute(request.getOrderId(), new OrderInfo(
+                request.getAmount(), request.getOrderName()));
         return ResponseEntity.ok("세션에 <주문 ID, 상품 정보> 항목을 저장함.");
     }
 
@@ -66,10 +69,10 @@ public class PaymentCon {
             @RequestParam String orderId,
             @RequestParam BigDecimal amount
     ) {
-        var productInfo = (ProductInfo) session.getAttribute(orderId);
+        var productInfo = (OrderInfo) session.getAttribute(orderId);
         return ResponseEntity.ok(new CheckAmountResult(
                 amount.equals(productInfo.getAmount()),
-                productInfo.getProductName()));
+                productInfo.getOrderName()));
     }
 
     @PostMapping(value = {"/confirm"})
@@ -86,6 +89,8 @@ public class PaymentCon {
                 confirmRequest,
                 System.getenv("WIDGET_SECRET_KEY"),
                 "https://api.tosspayments.com/v1/payments/confirm");
+        paymentService.createPayment(response);
+
         int statusCode = response.containsKey("error") ? 400:200;
         return ResponseEntity.status(statusCode).body(response);
     }

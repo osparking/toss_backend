@@ -12,9 +12,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Embeddable
 public class CardInfo {
-    private String ownerType; // "개인
-    private String number; // "46731099****758*"
-    private BigDecimal amount; // 10,700
+    private String cardOwnerType; // "개인
+    private String cardNumber; // "46731099****758*"
+    private BigDecimal cardAmount; // 10,700
     private String cardType; // "체크"
-    private String issuerCode; // "11"
+    private String cardIssuerCode; // "11"
 }
