@@ -39,11 +39,12 @@ public class BsOrder {
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime payWaitTime = LocalDateTime.now();
 
+    @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus orderStatus;
 
     /**
      * 생략된 정보: 주문 유저, 주문 항목, 수신처 등
      */
-    private String productName;
+    private String orderName;
 }

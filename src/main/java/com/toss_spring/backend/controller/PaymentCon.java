@@ -46,7 +46,7 @@ public class PaymentCon {
         order.setAmount(BigDecimal.valueOf(10700));
         order.setPayWaitTime(LocalDateTime.now());
         order.setOrderStatus(OrderStatus.PAY_WAIT);
-        order.setProductName("백설공주 2개 등");
+        order.setOrderName("백설공주 2개 등");
 
         var orderSaved = orderService.createOrder(order);
         return ResponseEntity.ok(orderSaved);
