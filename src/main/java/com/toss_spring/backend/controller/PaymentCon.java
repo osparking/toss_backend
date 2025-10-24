@@ -1,7 +1,7 @@
 package com.toss_spring.backend.controller;
 
 import com.toss_spring.backend.dto.CheckAmountResult;
-import com.toss_spring.backend.dto.ProductInfo;
+import com.toss_spring.backend.dto.OrderInfo;
 import com.toss_spring.backend.entity.BsOrder;
 import com.toss_spring.backend.request.ConfirmPaymentReq;
 import com.toss_spring.backend.request.SaveProductInfoReq;
@@ -51,11 +51,11 @@ public class PaymentCon {
         var orderSaved = orderService.createOrder(order);
         return ResponseEntity.ok(orderSaved);
     }
-    
+
     @PostMapping("/saveProductInfo")
     public ResponseEntity<?> saveAmountTemporarily(
             HttpSession session, @RequestBody SaveProductInfoReq request) {
-        session.setAttribute(request.getOrderId(), new ProductInfo(
+        session.setAttribute(request.getOrderId(), new OrderInfo(
                 request.getAmount(), request.getProductName()));
         return ResponseEntity.ok("세션에 <주문 ID, 상품 정보> 항목을 저장함.");
     }
@@ -66,10 +66,10 @@ public class PaymentCon {
             @RequestParam String orderId,
             @RequestParam BigDecimal amount
     ) {
-        var productInfo = (ProductInfo) session.getAttribute(orderId);
+        var productInfo = (OrderInfo) session.getAttribute(orderId);
         return ResponseEntity.ok(new CheckAmountResult(
                 amount.equals(productInfo.getAmount()),
-                productInfo.getProductName()));
+                productInfo.getOrderName()));
     }
 
     @PostMapping(value = {"/confirm"})

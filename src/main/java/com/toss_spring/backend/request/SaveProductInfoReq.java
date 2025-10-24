@@ -1,6 +1,5 @@
 package com.toss_spring.backend.request;
 
-import com.toss_spring.backend.dto.ProductInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
