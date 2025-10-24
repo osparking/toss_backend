@@ -52,7 +52,7 @@ public class PaymentCon {
         return ResponseEntity.ok(orderSaved);
     }
 
-    @PostMapping("/saveProductInfo")
+    @PostMapping("/saveOrderInfo")
     public ResponseEntity<?> saveAmountTemporarily(
             HttpSession session, @RequestBody SaveProductInfoReq request) {
         session.setAttribute(request.getOrderId(), new OrderInfo(
