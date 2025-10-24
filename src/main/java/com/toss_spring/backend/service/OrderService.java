@@ -1,6 +1,9 @@
 package com.toss_spring.backend.service;
 
 import com.toss_spring.backend.entity.BsOrder;
+import com.toss_spring.backend.exception.OrderIdNotFoundEx;
+import com.toss_spring.backend.repository.OrderRepository;
+import com.toss_spring.backend.util.Feedback;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -16,6 +19,20 @@ public class OrderService {
 
     @Autowired
     private OrderIdGenerator orderIdGenerator;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    public BsOrder getOrderByOrderId(String orderId)
+            throws OrderIdNotFoundEx {
+        var optionalOrder = orderRepository.findByOrderId(orderId);
+
+        if (optionalOrder.isPresent()) {
+            return optionalOrder.get();
+        } else {
+            throw new OrderIdNotFoundEx(Feedback.UNFOUND_ORDER_ID + orderId);
+        }
+    }
 
     public BsOrder createOrder(BsOrder order) {
         entityManager.persist(order);
