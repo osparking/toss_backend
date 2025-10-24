@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SaveProductInfoReq {
+public class SaveOrderInfoReq {
     private String orderId;
     private BigDecimal amount;
-    private String productName;
+    private String orderName;
 }

@@ -4,7 +4,7 @@ import com.toss_spring.backend.dto.CheckAmountResult;
 import com.toss_spring.backend.dto.OrderInfo;
 import com.toss_spring.backend.entity.BsOrder;
 import com.toss_spring.backend.request.ConfirmPaymentReq;
-import com.toss_spring.backend.request.SaveProductInfoReq;
+import com.toss_spring.backend.request.SaveOrderInfoReq;
 import com.toss_spring.backend.service.OrderIdGenerator;
 import com.toss_spring.backend.service.OrderService;
 import com.toss_spring.backend.util.OrderStatus;
@@ -54,9 +54,9 @@ public class PaymentCon {
 
     @PostMapping("/saveOrderInfo")
     public ResponseEntity<?> saveAmountTemporarily(
-            HttpSession session, @RequestBody SaveProductInfoReq request) {
+            HttpSession session, @RequestBody SaveOrderInfoReq request) {
         session.setAttribute(request.getOrderId(), new OrderInfo(
-                request.getAmount(), request.getProductName()));
+                request.getAmount(), request.getOrderName()));
         return ResponseEntity.ok("세션에 <주문 ID, 상품 정보> 항목을 저장함.");
     }
 
