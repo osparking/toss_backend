@@ -7,6 +7,7 @@ import com.toss_spring.backend.request.ConfirmPaymentReq;
 import com.toss_spring.backend.request.SaveOrderInfoReq;
 import com.toss_spring.backend.service.OrderIdGenerator;
 import com.toss_spring.backend.service.OrderService;
+import com.toss_spring.backend.service.PaymentService;
 import com.toss_spring.backend.util.OrderStatus;
 import com.toss_spring.backend.util.PayService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,6 +39,9 @@ public class PaymentCon {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private PaymentService paymentService;
 
     @GetMapping("/orderInfo")
     public ResponseEntity<BsOrder> getOrderInfo() {
@@ -86,6 +90,9 @@ public class PaymentCon {
                 confirmRequest,
                 System.getenv("WIDGET_SECRET_KEY"),
                 "https://api.tosspayments.com/v1/payments/confirm");
+
+        paymentService.createPayment(response);
+        
         int statusCode = response.containsKey("error") ? 400:200;
         return ResponseEntity.status(statusCode).body(response);
     }
