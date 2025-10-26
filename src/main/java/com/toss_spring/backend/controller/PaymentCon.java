@@ -18,6 +18,7 @@ import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
@@ -79,9 +80,14 @@ public class PaymentCon {
             @RequestParam BigDecimal amount
     ) {
         var orderInfo = (OrderInfo) session.getAttribute(orderId);
-        return ResponseEntity.ok(new CheckAmountResult(
-                amount.equals(orderInfo.getAmount()),
-                orderInfo.getOrderName()));
+        if (orderInfo==null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new CheckAmountResult(false, "결제 정보 부재"));
+        } else
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new CheckAmountResult(
+                            amount.equals(orderInfo.getAmount()),
+                            orderInfo.getOrderName()));
     }
 
     @PostMapping(value = {"/confirm"})
