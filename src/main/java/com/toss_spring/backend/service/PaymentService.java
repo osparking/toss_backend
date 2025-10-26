@@ -1,8 +1,10 @@
 package com.toss_spring.backend.service;
 
+import com.toss_spring.backend.dto.PaymentDto;
 import com.toss_spring.backend.entity.TossPayment;
 import com.toss_spring.backend.exception.OrderIdNotFoundEx;
 import com.toss_spring.backend.exception.PaymentArgException;
+import com.toss_spring.backend.repository.PaymentRepository;
 import com.toss_spring.backend.util.CardInfo;
 import com.toss_spring.backend.util.TossPaymentMethod;
 import com.toss_spring.backend.util.TossPaymentStatus;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Service
 @Transactional
@@ -25,6 +28,13 @@ public class PaymentService {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+
+    public List<PaymentDto> getRecentSome(int count) {
+        return paymentRepository.getRecentSome(count);
+    }
 
     public TossPayment createPayment(JSONObject paymentJSON)
             throws OrderIdNotFoundEx {
