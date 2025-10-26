@@ -29,6 +29,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.List;
 
 @RestController
 @RequestMapping("/payments")
@@ -43,6 +44,12 @@ public class PaymentCon {
 
     @Autowired
     private PaymentService paymentService;
+
+    @GetMapping("/getRecentSome")
+    public ResponseEntity<List<PaymentDto>> getRecentSome(
+            @RequestParam int count) {
+        return ResponseEntity.ok(paymentService.getRecentSome(count));
+    }
 
     @GetMapping("/orderInfo")
     public ResponseEntity<BsOrder> getOrderInfo() {
@@ -71,10 +78,10 @@ public class PaymentCon {
             @RequestParam String orderId,
             @RequestParam BigDecimal amount
     ) {
-        var productInfo = (OrderInfo) session.getAttribute(orderId);
+        var orderInfo = (OrderInfo) session.getAttribute(orderId);
         return ResponseEntity.ok(new CheckAmountResult(
-                amount.equals(productInfo.getAmount()),
-                productInfo.getOrderName()));
+                amount.equals(orderInfo.getAmount()),
+                orderInfo.getOrderName()));
     }
 
     @PostMapping(value = {"/confirm"})
@@ -95,7 +102,7 @@ public class PaymentCon {
                 "https://api.tosspayments.com/v1/payments/confirm");
 
         paymentService.createPayment(response);
-        
+
         int statusCode = response.containsKey("error") ? 400:200;
         return ResponseEntity.status(statusCode).body(response);
     }
