@@ -1,7 +1,9 @@
 package com.toss_spring.backend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toss_spring.backend.dto.CheckAmountResult;
 import com.toss_spring.backend.dto.OrderInfo;
+import com.toss_spring.backend.dto.PaymentDto;
 import com.toss_spring.backend.entity.BsOrder;
 import com.toss_spring.backend.request.ConfirmPaymentReq;
 import com.toss_spring.backend.request.SaveOrderInfoReq;
@@ -9,7 +11,6 @@ import com.toss_spring.backend.service.OrderIdGenerator;
 import com.toss_spring.backend.service.OrderService;
 import com.toss_spring.backend.service.PaymentService;
 import com.toss_spring.backend.util.OrderStatus;
-import com.toss_spring.backend.util.PayService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.json.simple.JSONObject;
@@ -81,7 +82,9 @@ public class PaymentCon {
             HttpServletRequest request,
             @RequestBody @NonNull ConfirmPaymentReq confirmPaymentReq)
             throws Exception {
-        String confirmRequest = PayService.convertToJson(confirmPaymentReq);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String confirmRequest = objectMapper.writeValueAsString(confirmPaymentReq);
 
         if (confirmRequest==null) {
             throw new Exception("결제 요청 객체 널 오류 발생");

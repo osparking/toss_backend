@@ -3,7 +3,7 @@ package com.toss_spring.backend.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toss_spring.backend.request.ConfirmPaymentReq;
 
-public class PayService {
+public class JsonService {
     public static String convertToJson(ConfirmPaymentReq req) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {

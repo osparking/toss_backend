@@ -13,7 +13,7 @@ class PayServiceTest {
         ConfirmPaymentReq req = new ConfirmPaymentReq(
                 "abcd", "orderId-01", BigDecimal.valueOf(50000)
         );
-        String result = PayService.convertToJson(req);
+        String result = JsonService.convertToJson(req);
         System.out.println(result);
         assertNotNull(result);
     }
