@@ -91,7 +91,7 @@ public class PaymentCon {
     }
 
     @PostMapping(value = {"/confirm"})
-    public ResponseEntity<JSONObject> confirmPayment(
+    public ResponseEntity<List<PaymentDto>> confirmPayment(
             HttpServletRequest request,
             @RequestBody @NonNull ConfirmPaymentReq confirmPaymentReq)
             throws Exception {
@@ -109,8 +109,10 @@ public class PaymentCon {
 
         paymentService.createPayment(response);
 
+        var recentSome = paymentService.getRecentSome(2);
         int statusCode = response.containsKey("error") ? 400:200;
-        return ResponseEntity.status(statusCode).body(response);
+
+        return ResponseEntity.status(statusCode).body(recentSome);
     }
 
     private JSONObject sendRequest(String confirmStr, String secretKey,
