@@ -109,7 +109,7 @@ public class PaymentCon {
 
         paymentService.createPayment(response);
 
-        var recentSome = paymentService.getRecentSome(2);
+        var recentSome = paymentService.getRecentSome(1);
         int statusCode = response.containsKey("error") ? 400:200;
 
         return ResponseEntity.status(statusCode).body(recentSome);
