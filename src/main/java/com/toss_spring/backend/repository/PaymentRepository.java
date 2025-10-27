@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<TossPayment, Long> {
-    @Query(value = "SELECT new com.toss_spring.backend.dto.PaymentDto(" +
+    String selectTossPayment = "SELECT new com.toss_spring.backend.dto.PaymentDto(" +
             "tp.id, " +
             "tp.approvedAt, " +
             "tp.totalAmount, " +
@@ -22,6 +22,11 @@ public interface PaymentRepository extends JpaRepository<TossPayment, Long> {
             "bo.orderName) " +
             "FROM TossPayment tp " +
             "JOIN tp.order bo " +
-            "ORDER BY tp.approvedAt DESC LIMIT :count")
+            "ORDER BY tp.approvedAt DESC";
+
+    @Query(value = selectTossPayment + " LIMIT :count")
     List<PaymentDto> getRecentSome(@Param("count") int count);
+
+    @Query(value = selectTossPayment)
+    List<PaymentDto> getAllPayments();
 }
