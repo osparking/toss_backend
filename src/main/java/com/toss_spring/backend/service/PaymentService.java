@@ -36,6 +36,10 @@ public class PaymentService {
         return paymentRepository.getRecentSome(count);
     }
 
+    public List<PaymentDto> getAllPayments() {
+        return paymentRepository.getAllPayments();
+    }
+
     public TossPayment createPayment(JSONObject paymentJSON)
             throws OrderIdNotFoundEx {
 
