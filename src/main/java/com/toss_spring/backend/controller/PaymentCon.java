@@ -49,7 +49,12 @@ public class PaymentCon {
     @GetMapping("/getRecentSome")
     public ResponseEntity<List<PaymentDto>> getRecentSome(
             @RequestParam int count) {
-        return ResponseEntity.ok(paymentService.getRecentSome(count));
+
+        var result = (count==99)
+                ? paymentService.getAllPayments()
+                :paymentService.getRecentSome(count);
+
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/orderInfo")
