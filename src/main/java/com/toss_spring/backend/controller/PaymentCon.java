@@ -50,7 +50,7 @@ public class PaymentCon {
     public ResponseEntity<List<PaymentDto>> getRecentSome(
             @RequestParam int count) {
 
-        var result = (count==99)
+        var result = count==999
                 ? paymentService.getAllPayments()
                 :paymentService.getRecentSome(count);
 
