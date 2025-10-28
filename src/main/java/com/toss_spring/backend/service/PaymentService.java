@@ -83,7 +83,9 @@ public class PaymentService {
         JSONObject recepitJSON = (JSONObject) paymentJSON.get("receipt");
         payment.setReceiptUrl((String) recepitJSON.get("url"));
 
-        payment.setCard(getCardInfo((JSONObject) paymentJSON.get("card")));
+        if (method==TossPaymentMethod.CARD) {
+            payment.setCard(getCardInfo((JSONObject) paymentJSON.get("card")));
+        }
 
         var status = TossPaymentStatus
                 .valueOf((String) paymentJSON.get("status"));
