@@ -10,7 +10,7 @@ public enum TossPaymentMethod {
     BOOK_GIFT_CERT("도서문화상품권"),
     GAME_GIFT_CERT("게임문화상품권");
 
-    public final String label;
+    private final String label;
 
     private TossPaymentMethod(String label) {
         this.label = label;
