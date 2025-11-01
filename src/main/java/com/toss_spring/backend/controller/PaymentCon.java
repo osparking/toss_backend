@@ -69,14 +69,14 @@ public class PaymentCon {
         var orderSaved = orderService.createOrder(order);
         return ResponseEntity.ok(orderSaved);
     }
-
-    @PostMapping("/saveOrderInfo")
-    public ResponseEntity<?> saveAmountTemporarily(
-            HttpSession session, @RequestBody SaveOrderInfoReq request) {
-        session.setAttribute(request.getOrderId(), new OrderInfo(
-                request.getAmount(), request.getOrderName()));
-        return ResponseEntity.ok("세션에 <주문 ID, 상품 정보> 항목을 저장함.");
-    }
+//
+//    @PostMapping("/saveOrderInfo")
+//    public ResponseEntity<?> saveAmountTemporarily(
+//            HttpSession session, @RequestBody SaveOrderInfoReq request) {
+//        session.setAttribute(request.getOrderId(), new OrderInfo(
+//                request.getAmount(), request.getOrderName()));
+//        return ResponseEntity.ok("세션에 <주문 ID, 상품 정보> 항목을 저장함.");
+//    }
 
     @GetMapping("/checkAmount")
     public ResponseEntity<CheckAmountResult> getAmountFromSession(
